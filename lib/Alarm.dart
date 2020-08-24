@@ -241,47 +241,7 @@ class _AlarmState extends State<Alarm> {
     _timer.cancel();
     super.dispose();
   }
-//  void init() async {
-//    prefs = await SharedPreferences.getInstance();
-//    int lastIndex = prefs.getInt("index") ;
-//    if (lastIndex == 0){
-//      return;
-//    }
-//    else{
-//      for( i = 0; i< lastIndex; i++) {
-//        getAlarm(i);
-//      }
-//    }
-//    setState(() {
-//      _alarms;
-//      _alarmName;
-//    });
-//
-//  }
 
-//  storeAlarms(index) async{
-//    prefs = await SharedPreferences.getInstance();
-//    String storeTime = "${_alarms[index].hour} + ${_alarms[index].minute}";
-//    prefs.setString("${_alarmName[index]}", storeTime);
-//  }
-//
-//  getAlarm(index) async {
-//    prefs = await SharedPreferences.getInstance();
-//    String getTime = "";
-//    getTime = prefs.getString("${_alarmName[index]}");
-//    List<String> splittedTime = getTime.split(':');
-//    _alarms[index] = splittedTime as TimeOfDay;
-//  }
-//
-//  setIndex(index) async{
-//    prefs = await SharedPreferences.getInstance();
-//    prefs.setInt("index", index);
-//
-//  }
-//  getIndex() async{
-//
-//    return lastIndex;
-//  }
 
 
   void initializing() async {
@@ -376,16 +336,7 @@ class _AlarmState extends State<Alarm> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(31, 97, 141, 2),
-      appBar: AppBar(
-        actions: <Widget>[
-//          IconButton(
-//            icon: Icon(Icons.youtube_searched_for),
-//            onPressed: () {
-//              _showNotificationAfterSecond();
-//            },
-//          )
-        ],
-      ),
+
       body: Padding(
         padding: EdgeInsets.all(8.0),
 //        child: Flexible(
@@ -437,40 +388,6 @@ class _AlarmState extends State<Alarm> {
     );
   }
 
-//  Future _pickTime(int index) async {
-//
-//  TimeOfDay time = await showTimePicker(context: this.context, initialTime: _time,
-//  builder: (BuildContext context, Widget child) {
-//    return Theme(data: ThemeData(), child: child);
-//  }) ;
-//    if(time != null) {
-//      setState(() {
-//        _alarms.add(time);
-//        _alarmName.add("alarm$index");
-//        setIndex(index);
-//        storeAlarms(index);
-//        DateTime now = DateTime.now();
-//        now = new DateTime.now();
-//        DateTime alarmTime = new DateTime(now.year, now.month, now.day, time.hour, time.minute);
-//        Duration timeRemaining = alarmTime.difference(now);
-////        int nowTime = (now.hour*3600) + (now.minute*60);
-////        int alarmTIme = (_alarms[index].hour*3600) + (_alarms[index].minute*60);
-//        _timer = Timer.periodic(Duration(seconds: 60), (timer) {
-////          if(timeRemaining.inHours > 0){
-////            if(timeRemaining.inMinutes > 0){
-////              timeRemaining.minutes = timeRemaining.inMinutes - 1 ;
-////            }
-////          }
-////          else{
-////            _timer.cancel();
-////            _showNotificationAfterSecond();
-////          }
-//        });
-//
-//      });
-//    }
-//  }
-
   Future _pickOneTime(int index) async {
     TimeOfDay time = await showTimePicker(
         context: this.context, initialTime: _time,
@@ -481,22 +398,22 @@ class _AlarmState extends State<Alarm> {
     final now = new DateTime.now();
     runAlarm(new DateTime(now.year, now.month, now.day, _time.hour, _time.minute));
 
-//    int relapseHour = (_time.hour - TimeOfDay.now().hour)*3600;
-//    int relapseMinute = (_time.minute - TimeOfDay.now().minute)*60;
-//    int remainingTime = relapseHour + relapseMinute;
-//    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-//      setState(() {
-//
-//        if(remainingTime < 1){
-//          timer.cancel();
-//          runAlarm(DateTime remainingTime);
-//        }
-//        else{
-//          remainingTime = remainingTime - 1;
-//        }
-//        setAlarm();
-//      });
-//    });
+    int relapseHour = (_time.hour - TimeOfDay.now().hour)*3600;
+    int relapseMinute = (_time.minute - TimeOfDay.now().minute)*60;
+    int remainingTime = relapseHour + relapseMinute;
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      setState(() {
+
+        if(remainingTime < 1){
+          timer.cancel();
+          notification();
+        }
+        else{
+          remainingTime = remainingTime - 1;
+        }
+        setAlarm();
+      });
+    });
   }
 
 
