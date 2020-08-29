@@ -3,14 +3,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'dart:async';
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
+import 'dart:async';
+import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Timer extends StatefulWidget {
   @override
   _TimerState createState() => _TimerState();
 
+  static void periodic(Duration duration, Null Function(Timer t) param1) {}
+
+  void cancel() {
+
+  }
+
 }
 
-class _TimerState extends State<Timer> with TickerProviderStateMixin {
+class _TimerState extends State<Timer> {
 
   int hour = 0;
   int minute = 0;
@@ -27,47 +49,10 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
 
     void initState() {
       super.initState();
+
     }
 
-    void start() {
-      setState(() {
-        started = false;
-        stopped = false;
-      });
-      timer = (hour*3600) + (minute*60) + second;
-      timmy = Timer.periodic(
-        Duration(seconds: 1,),
-          (Timer t){
-          setState(() {
-            if(timer < 1 || checkTimer == false){
-              t.cancel();
-              checkTimer = true;
-              timeToDisplay = "";
-              started = false;
-              stopped = false;
-            }
-            else if(timer < 60) {
-              timeToDisplay = timer.toString();
-              timer = timer - 1;
-            }
-            else if(timer < 3600) {
-              int m = timer ~/3600;
-              int s = timer - (60*m);
-              timeToDisplay = m.toString() + ":" + s.toString();
-              timer = timer -1;
-            }
-            else {
-              int h = timer ~/3600;
-              int t = timer - (3600 * h);
-              int m = t ~/60;
-              int s = t - (60*m);
-              timeToDisplay = h.toString() + ":" + m.toString() + ":" + s.toString();
-              timer = timer - 1;
-            }
-          });
-          }
-      );
-    }
+
     void stop() {
       setState(() {
         started = true;
@@ -195,6 +180,47 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
           ),
         ],
       ),
+    );
+  }
+
+  Future start() async {
+    setState(() {
+      started = false;
+      stopped = false;
+    });
+    timer = (hour*3600) + (minute*60) + second;
+    Timer timmy = new Timer();
+    Timer.periodic(
+        Duration(seconds: 1,),
+            (Timer t){
+          setState(() {
+            if(timer < 1 || checkTimer == false){
+              t.cancel();
+              checkTimer = true;
+              timeToDisplay = "";
+              started = false;
+              stopped = false;
+            }
+            else if(timer < 60) {
+              timeToDisplay = timer.toString();
+              timer = timer - 1;
+            }
+            else if(timer < 3600) {
+              int m = timer ~/3600;
+              int s = timer - (60*m);
+              timeToDisplay = m.toString() + ":" + s.toString();
+              timer = timer -1;
+            }
+            else {
+              int h = timer ~/3600;
+              int t = timer - (3600 * h);
+              int m = t ~/60;
+              int s = t - (60*m);
+              timeToDisplay = h.toString() + ":" + m.toString() + ":" + s.toString();
+              timer = timer - 1;
+            }
+          });
+        }
     );
   }
 }

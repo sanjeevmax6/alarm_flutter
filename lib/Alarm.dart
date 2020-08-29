@@ -407,6 +407,7 @@ class _AlarmState extends State<Alarm> {
         if(remainingTime < 1){
           timer.cancel();
           notification();
+          runAlarm(new DateTime(now.year, now.month, now.day, _time.hour, _time.minute));
         }
         else{
           remainingTime = remainingTime - 1;
